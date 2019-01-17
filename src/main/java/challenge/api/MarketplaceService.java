@@ -3,6 +3,8 @@ package challenge.api;
 import challenge.exceptions.InvalidAvailableFilterException;
 import challenge.exceptions.InvalidProductIdException;
 import challenge.exceptions.InvalidProductPriceException;
+import challenge.exceptions.InvalidQuantityChosenException;
+import challenge.models.Cart;
 import challenge.models.Product;
 import java.math.BigDecimal;
 import javax.ws.rs.*;
@@ -17,6 +19,7 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class MarketplaceService {
   private static HashMap<String, Product> hashMap = new HashMap<>();
+  private Cart cart = new Cart();
 
   public MarketplaceService() {
     // hardcoding product objects
@@ -114,6 +117,54 @@ public class MarketplaceService {
       }
     }
     return results;
+  }
+
+  @GET
+  @Path("/addToCart")
+  public Response addToCart(@QueryParam("productId") String productId,
+                        @QueryParam("quantity")  String quantity)
+      throws InvalidProductIdException, InvalidQuantityChosenException {
+    if (productId.isEmpty()) {
+      throw new InvalidProductIdException("No Product ID was provided!");
+    }
+    // retrieve Product using given ID and hashmap function
+    Product product = hashMap.get(String.valueOf(productId));
+    // verify a valid Product was retrieved
+    if (product == null) {
+      // throw exception if no Person was retrieved
+      throw new InvalidProductIdException("ID provided is not associated with a Registered Product");
+    }
+
+    int number;
+    if (quantity.isEmpty()) {
+      number = 1;
+    } else {
+      try {
+        number = Integer.parseInt(quantity);
+      } catch (NumberFormatException e) {
+        throw new InvalidQuantityChosenException("Value given for desired quantity is invalid!");
+      }
+    }
+    boolean result = this.cart.addToCart(product, number);
+
+    if (!result) {
+      throw new InvalidQuantityChosenException("Quantity of this product is too high");
+    }
+
+    return Response.ok().build();
+  }
+
+  @GET
+  @Path("/cart")
+  public String displayCart() {
+    return this.cart.toString();
+  }
+
+  @POST
+  @Path("/checkout")
+  public Response checkOut() {
+    this.cart.checkout();
+    return Response.ok().build();
   }
 
 }
