@@ -121,9 +121,12 @@ public class MarketplaceService {
 
   @GET
   @Path("/addToCart")
-  public Response addToCart(@QueryParam("productId") int productId,
-                        @QueryParam("quantity")  int quantity)
+  public Response addToCart(@QueryParam("productId") String productId,
+                        @QueryParam("quantity")  String quantity)
       throws InvalidProductIdException, InvalidQuantityChosenException {
+    if (productId.isEmpty()) {
+      throw new InvalidProductIdException("No Product ID was provided!");
+    }
     // retrieve Product using given ID and hashmap function
     Product product = hashMap.get(String.valueOf(productId));
     // verify a valid Product was retrieved
@@ -132,7 +135,17 @@ public class MarketplaceService {
       throw new InvalidProductIdException("ID provided is not associated with a Registered Product");
     }
 
-    boolean result = this.cart.addToCart(product, quantity);
+    int number;
+    if (quantity.isEmpty()) {
+      number = 1;
+    } else {
+      try {
+        number = Integer.parseInt(quantity);
+      } catch (NumberFormatException e) {
+        throw new InvalidQuantityChosenException("Value given for desired quantity is invalid!");
+      }
+    }
+    boolean result = this.cart.addToCart(product, number);
 
     if (!result) {
       throw new InvalidQuantityChosenException("Quantity of this product is too high");
