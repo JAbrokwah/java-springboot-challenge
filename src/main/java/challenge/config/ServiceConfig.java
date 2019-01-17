@@ -1,4 +1,4 @@
-package challenge;
+package challenge.config;
 
 import challenge.api.MarketplaceService;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
