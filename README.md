@@ -5,8 +5,8 @@ This project is my take on the challenge you provided. I used Java as my program
 
 To start the server, you can open the project in your IDE and run the main method in [ChallengeApplication.java](https://github.com/JAbrokwah/shopify-s19-challenge/blob/master/src/main/java/challenge/ChallengeApplication.java). Another way to start it up, (if Maven is installed) is to open the terminal in the top level project folder, and enter: `mvn spring-boot:run`.
 
-Once starting the server using either method, you should see some output on whichever console is opened for you as follows:
-![screenshot](./docs/images/Spring-Boot Startup.PNG "Spring-Boot Startup Output on Console")
+Once starting the server using either method, you should see some output on whichever console is opened for you. The last line should read:
+`Started ChallengeApplication in _ seconds (JVM running for _)` where the underscores signify the number of seconds for each time.
 
-If you see the last line signifying that the server started succesfully, then you are ready to try it out! If not, then you may have to do some troubleshooting first.
+This signifies that the server started successfully, then you are ready to try it out! If not, then you may have to do some troubleshooting first.
 
