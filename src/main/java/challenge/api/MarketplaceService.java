@@ -55,7 +55,7 @@ public class MarketplaceService {
     return result;
   }
 
-  @GET
+  @POST
   @Path("/purchase/{productId}")
   public Response purchaseProductById(@PathParam("productId") int productId) throws InvalidProductIdException {
     // retrieve Product using given ID and hashmap function
@@ -74,11 +74,11 @@ public class MarketplaceService {
 
   @GET
   @Path("/search")
-  public List<Product> findProduct(@QueryParam("title") String title,
+  public List<Product> findProduct(@QueryParam("productId") String id,
       @QueryParam("priceBelow") String price,
       @QueryParam("available") String status)
       throws InvalidProductPriceException, InvalidAvailableFilterException {
-    boolean checkTitle = !title.equals("");
+    boolean checkId = !id.equals("");
     boolean checkPriceLimit = !price.equals("");
     boolean checkAvailableInventory = false;
     if (status.equalsIgnoreCase("true")) {
@@ -103,8 +103,8 @@ public class MarketplaceService {
       boolean addCurrentProduct = true;
       Product currentProduct = entry.getValue();
       // check each parameter if given in query
-      if (checkTitle) {
-        addCurrentProduct = currentProduct.getTitle().equals(title);
+      if (checkId) {
+        addCurrentProduct = entry.getKey().equals(id);
       }
       if (checkPriceLimit) {
         addCurrentProduct = currentProduct.getPrice().doubleValue() < priceLimit.doubleValue();
@@ -119,7 +119,7 @@ public class MarketplaceService {
     return results;
   }
 
-  @GET
+  @POST
   @Path("/addToCart")
   public Response addToCart(@QueryParam("productId") String productId,
                         @QueryParam("quantity")  String quantity)
