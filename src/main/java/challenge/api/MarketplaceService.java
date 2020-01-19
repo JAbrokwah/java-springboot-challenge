@@ -1,7 +1,10 @@
 package challenge.api;
 
 import challenge.exceptions.InvalidAvailableFilterException;
+import challenge.exceptions.InvalidInventoryException;
+import challenge.exceptions.InvalidPriceException;
 import challenge.exceptions.InvalidProductIdException;
+import challenge.exceptions.InvalidProductNameException;
 import challenge.exceptions.InvalidProductPriceException;
 import challenge.exceptions.InvalidQuantityChosenException;
 import challenge.models.Cart;
@@ -18,7 +21,10 @@ import javax.ws.rs.core.Response;
 @Path("/marketplace")
 @Produces(MediaType.APPLICATION_JSON)
 public class MarketplaceService {
-  private static HashMap<String, Product> hashMap = new HashMap<>();
+  private static HashMap<String, Product> products = new HashMap<>();
+  private int numOfProducts() {
+    return products.size();
+  }
   private Cart cart = new Cart();
 
   public MarketplaceService() {
@@ -29,37 +35,62 @@ public class MarketplaceService {
     Product product4 = new Product("Raptors Championship Ring", new BigDecimal(1.99), 2);
 
     // placing products into map
-    hashMap.put("1", product1);
-    hashMap.put("2", product2);
-    hashMap.put("3", product3);
-    hashMap.put("4", product4);
+    products.put("1", product1);
+    products.put("2", product2);
+    products.put("3", product3);
+    products.put("4", product4);
+  }
+
+  @POST
+  @Path("/add")
+  public Response addProductToCatalogue(String title, float price, int inventory)
+      throws InvalidInventoryException, InvalidPriceException, InvalidProductNameException {
+    if (inventory < 0) {
+      throw new InvalidInventoryException("Inventory value for new product is invalid. Submit an inventory >= 0");
+    }
+    if (price < 0) {
+      throw new InvalidPriceException("Price value for new product is invalid. Submit a price >= $0");
+    }
+    if (title.length() == 0) {
+      throw new InvalidProductNameException("Name of new product is empty. Please input a name for this product");
+    }
+
+    Product new_prod = new Product(title, new BigDecimal(price), inventory);
+
+    if (products.containsValue(new_prod)) {
+      return Response.status(409, "This Product already exists!").build();
+    }
+
+    products.put(String.valueOf(this.numOfProducts()), new_prod);
+
+    return Response.status(201, "Product successfully added!").build();
   }
 
   @GET
   @Path("/catalogue")
   public HashMap<String, Product> displayCatalogue() {
-    return hashMap;
+    return products;
   }
 
   @GET
   @Path("/info/{productId}")
   public Product getProductInfoById(@PathParam("productId") int productId) throws InvalidProductIdException {
     // retrieve Product using given ID and hashmap function
-    Product result = hashMap.get(String.valueOf(productId));
+    Product result = products.get(String.valueOf(productId));
     // verify a valid Product was retrieved
     if (result == null) {
       // throw exception if no Person was retrieved
       throw new InvalidProductIdException("ID provided is not associated with a Registered Product");
     }
-    // return person if retrieved
-    return result;
+    // return product if retrieved
+    return new Product(result.getTitle(), result.getPrice(), result.getInventory());
   }
 
   @POST
   @Path("/purchase/{productId}")
   public Response purchaseProductById(@PathParam("productId") int productId) throws InvalidProductIdException {
     // retrieve Product using given ID and hashmap function
-    Product result = hashMap.get(String.valueOf(productId));
+    Product result = products.get(String.valueOf(productId));
     // verify a valid Product was retrieved
     if (result == null) {
       // throw exception if no Person was retrieved
@@ -80,11 +111,11 @@ public class MarketplaceService {
       throws InvalidProductPriceException, InvalidAvailableFilterException {
     boolean checkId = !id.equals("");
     boolean checkPriceLimit = !price.equals("");
-    boolean checkAvailableInventory = false;
-    if (status.equalsIgnoreCase("true")) {
-      checkAvailableInventory = true;
-    } else if (!status.equalsIgnoreCase("false") && !status.equalsIgnoreCase("")) {
-      throw new InvalidAvailableFilterException("Available status must be: TRUE or FALSE");
+    boolean checkAvailableInventory = !(status == null);
+    if (checkAvailableInventory)  {
+      if (!status.equalsIgnoreCase("true")) {
+        throw new InvalidAvailableFilterException("Available status must be: TRUE or FALSE");
+      }
     }
 
     BigDecimal priceLimit = null;
@@ -98,7 +129,7 @@ public class MarketplaceService {
 
 
     List<Product> results = new ArrayList<>();
-    for (Map.Entry<String, Product> entry : hashMap.entrySet()) {
+    for (Map.Entry<String, Product> entry : products.entrySet()) {
       // check if current product should be added to query results
       boolean addCurrentProduct = true;
       Product currentProduct = entry.getValue();
@@ -128,7 +159,7 @@ public class MarketplaceService {
       throw new InvalidProductIdException("No Product ID was provided!");
     }
     // retrieve Product using given ID and hashmap function
-    Product product = hashMap.get(String.valueOf(productId));
+    Product product = products.get(productId);
     // verify a valid Product was retrieved
     if (product == null) {
       // throw exception if no Person was retrieved
