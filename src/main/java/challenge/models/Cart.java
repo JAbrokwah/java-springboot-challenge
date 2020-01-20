@@ -1,7 +1,10 @@
 package challenge.models;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class Cart {
@@ -22,7 +25,7 @@ public class Cart {
       // add to cart
       if (this.productsInCart.containsKey(product)) {
         int oldVal = this.productsInCart.get(product);
-        if (quantity > product.getInventory() - oldVal) {
+        if (quantity > product.getInventory()) {
           return false;
         }
         this.productsInCart.put(product, oldVal + quantity);
@@ -35,18 +38,42 @@ public class Cart {
     return true;
   }
 
-  public void checkout() {
-    for (Object o : this.productsInCart.entrySet()) {
-      Entry pair = (Entry) o;
-      Product current = (Product)(pair.getKey());
-      current.setInventory(current.getInventory() - ((Integer) pair.getValue()));
-    }
+  public String checkout() {
+    JsonObject receipt = new JsonObject();
+    receipt.addProperty("Products Sold", this.numItems);
+    receipt.addProperty("Subtotal", this.subtotal);
+    receipt.addProperty("Total Paid", this.getTotalWithTax());
 
     // clear cart
     this.productsInCart.clear();
     // reset stats
     this.numItems = 0;
     this.subtotal = BigDecimal.ZERO;
+    return receipt.toString();
+  }
+
+  public JsonObject display() {
+    JsonObject cart = new JsonObject();
+    cart.addProperty("Subtotal", this.subtotal);
+    cart.addProperty("Total with Tax (13% HST)", this.getTotalWithTax());
+
+    JsonArray products = new JsonArray();
+
+    for (Map.Entry<Product, Integer> entry : this.productsInCart.entrySet()) {
+      Product prod = entry.getKey();
+      Integer count = entry.getValue();
+
+      JsonObject current = new JsonObject();
+      current.addProperty("Product", prod.getTitle());
+      current.addProperty("Price", prod.getPrice());
+      current.addProperty("Count", count);
+
+      products.add(current);
+    }
+
+    cart.add("Products", products);
+
+    return cart;
   }
 
   @Override

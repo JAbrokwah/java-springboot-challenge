@@ -52,13 +52,12 @@ public class Product {
       return false;
     }
     Product product = (Product) o;
-    return getInventory() == product.getInventory() &&
-        getTitle().equals(product.getTitle()) &&
+    return getTitle().equals(product.getTitle()) &&
         getPrice().equals(product.getPrice());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getTitle(), getPrice(), getInventory());
+    return Objects.hash(getTitle(), getPrice());
   }
 }
