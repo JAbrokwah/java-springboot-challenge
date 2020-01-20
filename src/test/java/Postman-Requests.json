@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "394cad77-7dcb-4032-8bc8-7d5049bff6fe",
+		"name": "ChallengeApp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Catalogue",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/services/marketplace/catalogue",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"marketplace",
+						"catalogue"
+					]
+				},
+				"description": "Retrieve All Items in Store"
+			},
+			"response": []
+		},
+		{
+			"name": "Product Info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/services/marketplace/info/:product_id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"marketplace",
+						"info",
+						":product_id"
+					],
+					"variable": [
+						{
+							"key": "product_id",
+							"value": "272"
+						}
+					]
+				},
+				"description": "Retrieve information about specific product using product ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/services/marketplace/search?productId=&priceBelow=&available=true",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"marketplace",
+						"search"
+					],
+					"query": [
+						{
+							"key": "productId",
+							"value": ""
+						},
+						{
+							"key": "priceBelow",
+							"value": ""
+						},
+						{
+							"key": "available",
+							"value": "true"
+						}
+					]
+				},
+				"description": "Query products using parameters"
+			},
+			"response": []
+		},
+		{
+			"name": "Purchase Specific Product",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/services/marketplace/purchase/:product_id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"marketplace",
+						"purchase",
+						":product_id"
+					],
+					"variable": [
+						{
+							"key": "product_id",
+							"value": "2"
+						}
+					]
+				},
+				"description": "Instantly checkout 1 of an item using prod ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Add to Cart",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/services/marketplace/addToCart?productId=4&quantity=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"marketplace",
+						"addToCart"
+					],
+					"query": [
+						{
+							"key": "productId",
+							"value": "4"
+						},
+						{
+							"key": "quantity",
+							"value": "1"
+						}
+					]
+				},
+				"description": "Add specific quantity of specific product to cart"
+			},
+			"response": []
+		},
+		{
+			"name": "View Cart",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/services/marketplace/cart",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"marketplace",
+						"cart"
+					]
+				},
+				"description": "See all items in cart currently"
+			},
+			"response": []
+		},
+		{
+			"name": "Checkout",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/services/marketplace/checkout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"marketplace",
+						"checkout"
+					]
+				},
+				"description": "Checkout items in cart, clear cart and display user's receipt"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Item to Catalogue",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"price\": 59.99,\n\t\"title\": \"BooHoo Gift Card\",\n\t\"inventory\": 500\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/services/marketplace/add",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"marketplace",
+						"add"
+					]
+				},
+				"description": "Add new items to catalogue by including price, title, inventory."
+			},
+			"response": []
+		},
+		{
+			"name": "Restock",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"price\": 19.99,\n\t\"title\": \"Raptors Foam Finger\",\n\t\"inventory\": 500\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/services/marketplace/restock",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"marketplace",
+						"restock"
+					]
+				},
+				"description": "Re-Up inventory to specific product"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
