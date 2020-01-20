@@ -35,3 +35,4 @@ Happy Shopping!
 - Include authentication & authorization to differentiate between customer and admin
     - Allow specific roles to access API's specific to them
 - Develop a Front End for UX aspect
+- Implement a 'Remove from Cart' feature
