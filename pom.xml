@@ -21,7 +21,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
-    <dependency.cxf-version>3.2.5</dependency.cxf-version>
+    <dependency.cxf-version>3.4.10</dependency.cxf-version>
   </properties>
 
   <dependencies>
